@@ -1,1 +1,1 @@
-declare var ethereum: {} | undefined;
+declare var ethereum: any;

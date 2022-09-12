@@ -1,13 +1,29 @@
 import { ConnectWallet } from "./components/ConnectWallet.component";
 import { useGContext } from "./GContext";
 import twitterLogo from "./assets/twitter-logo.svg";
+import { useEffect } from "react";
 
 // Constants
 const TWITTER_HANDLE = "changisadev";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 function App() {
-  const { walletAddress } = useGContext();
+  const { walletAddress, setWalletAddress } = useGContext();
+
+  useEffect(() => {
+    if (window.ethereum) {
+      console.log("1. ethereum.selectedAddress", ethereum.selectedAddress);
+      window.ethereum.on("accountsChanged", (accounts: string[]) => {
+        console.log("accountsChanged", ethereum.selectedAddress, accounts);
+        if (accounts.length > 0 && ethereum.selectedAddress) {
+          setWalletAddress(ethereum.selectedAddress);
+        } else {
+          setWalletAddress(null);
+        }
+      });
+      setWalletAddress(ethereum.selectedAddress || null);
+    }
+  }, [setWalletAddress]);
 
   return (
     <div className="min-h-screen bg-gray-800 text-white">

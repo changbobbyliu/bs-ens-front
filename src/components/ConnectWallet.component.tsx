@@ -27,7 +27,9 @@ export const ConnectWallet = () => {
       return {
         title: "Connect Wallet",
         onClick: () => {
-          console.log("TODO: connect wallet");
+          // Check if have access
+          // const accounts = await ethereum.request({ method: 'eth_accounts' });
+          ethereum.request({ method: "eth_requestAccounts" }); // set accountsChanged listener in App.tsx
         },
       };
     }
