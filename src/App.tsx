@@ -2,6 +2,7 @@ import { ConnectWallet } from "./components/ConnectWallet.component";
 import { useGContext } from "./GContext";
 import twitterLogo from "./assets/twitter-logo.svg";
 import { useEffect } from "react";
+import { MintDomainForm } from "./components/MintDomainForm.component";
 
 // Constants
 const TWITTER_HANDLE = "changisadev";
@@ -40,6 +41,13 @@ function App() {
             alt=""
           />
         </div>
+        {!!window.ethereum && walletAddress ? (
+          <MintDomainForm />
+        ) : (
+          <p className="text-amber-400 m-2 font-mono text-center">
+            Please install a wallet and connect first
+          </p>
+        )}
       </main>
       <footer className="h-16 flex items-center justify-center">
         <img alt="Twitter Logo" className="w-12" src={twitterLogo} />
