@@ -22,7 +22,17 @@ function App() {
           setWalletAddress(null);
         }
       });
-      setWalletAddress(ethereum.selectedAddress || null);
+      ethereum
+        .request({ method: "eth_accounts" })
+        .then((accounts: string[]) => {
+          console.log("eth_accounts", ethereum.selectedAddress, accounts);
+          const account =
+            ethereum.selectedAddress ||
+            (accounts.length > 0 ? accounts[0] : null);
+
+          setWalletAddress(account);
+        });
+      setWalletAddress(ethereum.selectedAddress);
     }
   }, [setWalletAddress]);
 
