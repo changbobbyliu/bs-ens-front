@@ -18,6 +18,36 @@ export const MintDomainForm = () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        C.CONTRACT_ADDRESS,
+        C.CONTRACT_ABI.abi,
+        signer
+      );
+
+      console.log("Going to pop wallet now to pay gas...");
+      let tx = await contract.register(domain, {
+        value: ethers.utils.parseEther(price),
+      });
+      // Wait for the transaction to be mined
+      const receipt = await tx.wait();
+
+      // Check if the transaction was successfully completed
+      if (receipt.status === 1) {
+        console.log(
+          "Domain minted! https://mumbai.polygonscan.com/tx/" + tx.hash
+        );
+
+        // Set the record for the domain
+        tx = await contract.setRecord(domain, record);
+        await tx.wait();
+
+        console.log("Record set! https://mumbai.polygonscan.com/tx/" + tx.hash);
+
+        setRecord("");
+        setDomain("");
+      } else {
+        alert("Transaction failed! Please try again");
+      }
     } catch (error) {
       console.log(error);
     }
