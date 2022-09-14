@@ -4,14 +4,17 @@ import twitterLogo from "./assets/twitter-logo.svg";
 import { useEffect } from "react";
 import { MintDomainForm } from "./components/MintDomainForm.component";
 import { C } from "./config/constants";
+import { useFetchMints } from "./hooks/contract/useFetchMints";
 
 // Constants
 const TWITTER_HANDLE = "changisadev";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 function App() {
-  const { walletAddress, setWalletAddress, network, setNetwork } =
+  const { walletAddress, setWalletAddress, network, setNetwork, mints } =
     useGContext();
+
+  const { fetchMints } = useFetchMints();
 
   useEffect(() => {
     if (window.ethereum) {
@@ -42,7 +45,13 @@ function App() {
         setNetwork(C.networks[chainId]);
       });
     }
-  }, [setWalletAddress, setNetwork]);
+  }, []);
+
+  useEffect(() => {
+    if (walletAddress && network === "Polygon Mumbai Testnet") {
+      fetchMints();
+    }
+  }, [network, walletAddress]);
 
   const switchNetwork = async () => {
     if (window.ethereum) {
