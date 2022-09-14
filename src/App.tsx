@@ -3,13 +3,15 @@ import { useGContext } from "./GContext";
 import twitterLogo from "./assets/twitter-logo.svg";
 import { useEffect } from "react";
 import { MintDomainForm } from "./components/MintDomainForm.component";
+import { C } from "./config/constants";
 
 // Constants
 const TWITTER_HANDLE = "changisadev";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 function App() {
-  const { walletAddress, setWalletAddress } = useGContext();
+  const { walletAddress, setWalletAddress, network, setNetwork } =
+    useGContext();
 
   useEffect(() => {
     if (window.ethereum) {
@@ -32,9 +34,58 @@ function App() {
 
           setWalletAddress(account);
         });
-      setWalletAddress(ethereum.selectedAddress);
+
+      ethereum.request({ method: "eth_chainId" }).then((chainId: string) => {
+        setNetwork(C.networks[chainId]);
+      });
+      ethereum.on("chainChanged", (chainId: string) => {
+        setNetwork(C.networks[chainId]);
+      });
     }
-  }, [setWalletAddress]);
+  }, [setWalletAddress, setNetwork]);
+
+  const switchNetwork = async () => {
+    if (window.ethereum) {
+      try {
+        // Try to switch to the Mumbai testnet
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x13881" }], // Check networks.js for hexadecimal network ids
+        });
+      } catch (error: any) {
+        // This error code means that the chain we want has not been added to MetaMask
+        // In this case we ask the user to add it to their MetaMask
+        if (error.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: "0x13881",
+                  chainName: "Polygon Mumbai Testnet",
+                  rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+                  nativeCurrency: {
+                    name: "Mumbai Matic",
+                    symbol: "MATIC",
+                    decimals: 18,
+                  },
+                  blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+                },
+              ],
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        console.log(error);
+      }
+    } else {
+      // If window.ethereum is not found then MetaMask is not installed
+      alert(
+        "MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html"
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-800 text-white">
@@ -52,7 +103,20 @@ function App() {
           />
         </div>
         {!!window.ethereum && walletAddress ? (
-          <MintDomainForm />
+          network === "Polygon Mumbai Testnet" ? (
+            <MintDomainForm />
+          ) : (
+            <p className="text-amber-400 m-2 font-mono text-center">
+              Please{" "}
+              <button
+                className="underline underline-offset-4"
+                onClick={switchNetwork}
+              >
+                switch
+              </button>{" "}
+              to Polygon Mumbai Testnet
+            </p>
+          )
         ) : (
           <p className="text-amber-400 m-2 font-mono text-center">
             Please install a wallet and connect first

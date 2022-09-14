@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 import { useGContext } from "../GContext";
+import polygonLogo from "../assets/polygonlogo.png";
+import ethLogo from "../assets/ethlogo.png";
 
 type TWalletCTA = {
   title: string;
@@ -11,7 +13,7 @@ const shortAddress = (address: string) => {
 };
 
 export const ConnectWallet = () => {
-  const { walletAddress, setWalletAddress } = useGContext();
+  const { walletAddress, network } = useGContext();
 
   const action = useMemo<TWalletCTA>(() => {
     if (!window.ethereum) {
@@ -39,20 +41,20 @@ export const ConnectWallet = () => {
     };
   }, [walletAddress]);
 
-  const connectWallet = async () => {
-    try {
-      console.log(window.ethereum);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="flex">
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={action.onClick}
       >
+        {!!network && !!walletAddress && (
+          <img
+            alt="Network logo"
+            className="w-4 h-4 mr-1.5"
+            src={network?.includes("Polygon") ? polygonLogo : ethLogo}
+          />
+        )}
+
         {action.title}
       </button>
     </div>
