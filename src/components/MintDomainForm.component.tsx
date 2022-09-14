@@ -5,7 +5,7 @@ import { useGContext } from "../GContext";
 import { useFetchMints } from "../hooks/contract/useFetchMints";
 
 export const MintDomainForm = () => {
-  const { mints, walletAddress } = useGContext();
+  const { mints, walletAddress, setModalData } = useGContext();
   const { fetchMints } = useFetchMints();
 
   const [domain, setDomain] = useState("");
@@ -21,6 +21,8 @@ export const MintDomainForm = () => {
     const price =
       domain.length === 3 ? "0.5" : domain.length === 4 ? "0.3" : "0.1";
     console.log("Minting domain", domain, "with price", price);
+
+    setLoading(true);
 
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -50,7 +52,13 @@ export const MintDomainForm = () => {
 
         console.log("Record set! https://mumbai.polygonscan.com/tx/" + tx.hash);
 
-        setTimeout(fetchMints, 2000);
+        setTimeout(() => {
+          fetchMints();
+          setLoading(false);
+          setModalData({
+            description: `Domain minted: ${domain}.${C.tld}`,
+          });
+        }, 2000);
 
         setRecord("");
         setDomain("");
@@ -59,6 +67,7 @@ export const MintDomainForm = () => {
       }
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 

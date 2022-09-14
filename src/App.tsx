@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { MintDomainForm } from "./components/MintDomainForm.component";
 import { C } from "./config/constants";
 import { useFetchMints } from "./hooks/contract/useFetchMints";
+import { TopLevelModal } from "./components/TopLevelModal.component";
 
 // Constants
 const TWITTER_HANDLE = "changisadev";
@@ -98,6 +99,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-800 text-white">
+      <TopLevelModal />
       <header className="flex items-center px-4 justify-between h-16">
         <div className="text-xl font-bold">📣 FETH</div>
         <ConnectWallet />
