@@ -176,6 +176,7 @@ export const MintDomainForm = () => {
           <>
             <button
               onClick={updateDomain}
+              disabled={loading}
               className="bg-amber-500 text-white px-4 py-2 rounded mt-4 block"
             >
               Set Record
@@ -192,7 +193,7 @@ export const MintDomainForm = () => {
         ) : (
           <button
             className="bg-amber-500 text-white px-4 py-2 rounded mt-4 block"
-            disabled={false}
+            disabled={loading}
             onClick={mintDomain}
           >
             Mint

@@ -51,6 +51,6 @@ export const useFetchMints = () => {
       setLoading(true);
       await fetchMints(setMints);
       setLoading(false);
-    }, []),
+    }, [setMints]),
   };
 };

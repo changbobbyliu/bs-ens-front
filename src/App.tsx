@@ -12,7 +12,7 @@ const TWITTER_HANDLE = "changisadev";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 function App() {
-  const { walletAddress, setWalletAddress, network, setNetwork, mints } =
+  const { walletAddress, setWalletAddress, network, setNetwork } =
     useGContext();
 
   const { fetchMints } = useFetchMints();
@@ -46,13 +46,13 @@ function App() {
         setNetwork(C.networks[chainId]);
       });
     }
-  }, []);
+  }, [setNetwork, setWalletAddress]);
 
   useEffect(() => {
     if (walletAddress && network === "Polygon Mumbai Testnet") {
       fetchMints();
     }
-  }, [network, walletAddress]);
+  }, [network, walletAddress, fetchMints]);
 
   const switchNetwork = async () => {
     if (window.ethereum) {
