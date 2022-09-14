@@ -13,6 +13,8 @@ type TGContext = {
   setWalletAddress: Dispatch<SetStateAction<string | null>>;
   network: string | null;
   setNetwork: Dispatch<SetStateAction<string | null>>;
+  mints: DTO.TMint[];
+  setMints: Dispatch<SetStateAction<DTO.TMint[]>>;
 };
 
 const GContext = createContext<TGContext>(undefined!);
@@ -20,6 +22,7 @@ const GContext = createContext<TGContext>(undefined!);
 export const GProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [network, setNetwork] = useState<string | null>(null);
+  const [mints, setMints] = useState<DTO.TMint[]>([]);
 
   return (
     <GContext.Provider
@@ -28,6 +31,8 @@ export const GProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setWalletAddress,
         network,
         setNetwork,
+        mints,
+        setMints,
       }}
     >
       {children}
